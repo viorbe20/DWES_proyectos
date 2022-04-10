@@ -1,7 +1,7 @@
 <?php
 
 $ejercicios = array (
-    array ('id'=>1, 'titulo'=>'Sopa de Letras V1', 'descripcion'=>'Muestra 5 capitales almacenadas en una sopa de letras.', 'enlace'=>'sopaLetrasV1.php', 'github'=>'https://github.com/viorbe20/DWES_ud3_act2/blob/main/ej1.php'),
+    array ('id'=>1, 'titulo'=>'Sopa de Letras V1', 'descripcion'=>'Muestra 5 capitales almacenadas en una sopa de letras.', 'enlace'=>'sopaLetrasV1.php', 'github'=>'https://github.com/viorbe20/DWES_proyectos/blob/main/sopaLetrasV1.php'),
 )
 ?>
 
@@ -16,7 +16,7 @@ $ejercicios = array (
 <body>
 <h1>Actividades de Repaso (DWES)</h1>
     <h3>Ejercicios sobre Bucles</h3>
-    <a href="../../index.php">Volver al índice de ejercicios</a><br><br>
+    <a href="../index.php">Volver al índice de ejercicios</a><br><br>
     <?php 
     foreach ($ejercicios as $key => $value) {
         echo '<a target="_blank" href="' . $value['enlace'] . '">' . $value['id'] . '.' . $value['titulo'] .'</a>' . '<br>' . $value['descripcion'] . '<br>';
