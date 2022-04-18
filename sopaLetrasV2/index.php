@@ -88,33 +88,16 @@ if (isset($_GET['row'])) {
             //Si se han acertado las posiciones comprobamos índices
             if ($_SESSION['solutionRow'] = $_SESSION['solutionColumn']){
                 echo('<br>Has acertado') ;
-            } 
-
+                $index =  $_SESSION['solutionRow'][0];
+                echo('<br>' . $index);
+                echo('<br>');
+                $_SESSION['dataArray'][$index]["Estado"] = true;
+                //var_dump($_SESSION['dataArray'][$index]["Estado"]);
+            }
             unset($_SESSION['solutionRow']);
             unset($_SESSION['solutionColumn']);
         }
     }
-
-
-
-
-
-
-
-    // //Recoge la posición final
-    // if (isset($_SESSION['start'])) {
-    //     unset($_SESSION['start']);
-    //     echo('<br>Termina') ;
-    //     if (isset($_SESSION['solutionRow'])) {
-    //         $_SESSION['finish'] = $clickedRow . $clickedColumn;   
-    //     }
-
-
-    // }
-    //Cambia valor
-    //$_SESSION['toggle'] = 1 - $_SESSION['toggle'];
-
-    //unset($_GET['row']);
 }
 
 
@@ -278,7 +261,7 @@ function createNewBoard()
         } while ($wordChecked != 0); //Sale cuando la palabra se ha comprobado. 
 
         //Cargamos el array con los datos de las palabras seleccionadas
-        $_SESSION['dataArray'][] = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "false");
+        $_SESSION['dataArray'][] = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => false);
         //$_SESSION['dataArray'][] = array($capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "falso");
 
         //Recorro la palabra comprobada y colocamos
