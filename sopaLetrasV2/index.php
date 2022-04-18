@@ -1,10 +1,11 @@
 <!--Sopa de Letras.
 Muestra una sopa de letras con 5 capitales almacenadas.
-En esta versión se usan sesiones para gurdar la información.
+En esta versión se usan sesiones para guardar la información.
 Virginia Ordoño Bernier
 -->
 
 <?php
+
 echo ('<a href="destroySession.php">Empezar</a> <br>');
 //Longitud del tablero
 DEFINE("LENGTHBOARD", 9);
@@ -14,25 +15,109 @@ session_start();
 if (!isset($_SESSION['board'])) {
     $_SESSION['board'] = array();
     $_SESSION['dataArray'] = array();
+    $_SESSION['toggle'] = 1;
     createNewBoard();
 }
 
 //Imprime por pantalla
-showBoard(); 
+showBoard();
 
 //Cuando se hace click en una letra se comprueba
 if (isset($_GET['row'])) {
     $clickedRow = $_GET['row'];
     $clickedColumn = $_GET['column'];
-    
-    var_dump($_SESSION['dataArray']);
-    foreach ($_SESSION['dataArray'] as $key => $value) {
-        echo($key) ;
+
+    $_SESSION['toggle'] = 1 - $_SESSION['toggle'];
+
+
+    //Posición de inicio
+    if ($_SESSION['toggle'] == 0) {
+        echo ('<br>Toggle 0');
+
+        //Cierra sesión que contiene posición final
+        unset($_SESSION['finish']);
+        $_SESSION['start'] = $clickedRow . $clickedColumn;
+        echo ('<br>Inicio' . $_SESSION['start']);
+
+        foreach ($_SESSION['dataArray'] as $key => $value) {
+
+            foreach ($value as $key => $position) {
+                if ($key == "Empieza") {
+                    if ($clickedRow . $clickedColumn == $position) {
+                        echo ('<br>Inicio correcto');
+                        //print_r(array_keys($_SESSION['dataArray'], $value));
+                        //Guardo la posición
+                        $_SESSION['solutionRow'] = array_keys($_SESSION['dataArray'], $value);
+                    } else {
+                        echo ('<br>Inicio NO correcto');
+                        //$_SESSION['solution'] = 0;
+                    }
+                }
+            }
+        }
     }
 
-    //$_SESSION['dataArray'] = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "falso");
-    
+    //Posición de fin
+    if ($_SESSION['toggle'] == 1) {
+        echo ('<br>Toggle 1');
+
+        //Cierra sesión que contiene posición inicial
+        unset($_SESSION['start']);
+
+        //En caso de acertar posición inicial
+        if (isset($_SESSION['solutionRow'])) {
+            $_SESSION['finish'] = $clickedRow . $clickedColumn;
+            echo ('<br>Fin elegido => ' . $_SESSION['finish']);
+
+            foreach ($_SESSION['dataArray'] as $key => $value) {
+                foreach ($value as $key => $position) {
+                    if ($key == "Acaba") {
+                        if ($clickedRow . $clickedColumn == $position) {
+                            echo ('<br>Fin correcto');
+                            //print_r(array_keys($_SESSION['dataArray'], $value));
+                            //Guardo la posición
+                            $_SESSION['solutionColumn'] = array_keys($_SESSION['dataArray'], $value);
+                        } else {
+                            echo ('<br>Final NO correcto');
+                            //$_SESSION['solution'] = 0;
+                        }
+                    }
+                }
+            }
+
+            //Si se han acertado las posiciones comprobamos índices
+            if ($_SESSION['solutionRow'] = $_SESSION['solutionColumn']){
+                echo('<br>Has acertado') ;
+            } 
+
+            unset($_SESSION['solutionRow']);
+            unset($_SESSION['solutionColumn']);
+        }
+    }
+
+
+
+
+
+
+
+    // //Recoge la posición final
+    // if (isset($_SESSION['start'])) {
+    //     unset($_SESSION['start']);
+    //     echo('<br>Termina') ;
+    //     if (isset($_SESSION['solutionRow'])) {
+    //         $_SESSION['finish'] = $clickedRow . $clickedColumn;   
+    //     }
+
+
+    // }
+    //Cambia valor
+    //$_SESSION['toggle'] = 1 - $_SESSION['toggle'];
+
+    //unset($_GET['row']);
 }
+
+
 
 //Array que contiene los datos de la tabla
 //$boardArray = array();
@@ -156,7 +241,7 @@ function createNewBoard()
             //Cargamos datos de capital y coordenadas en el array de verificación
             //$capitalsDataArray = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "falso");
             //$_SESSION['capitalsDataArray'] = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "falso");
-           
+
             //Cargamos estas variables con la posición de la letra incial y 
             //las usaremos como índices para recorrer el array donde ya hay colocadas capitales
             $row = $firstLR;
@@ -193,8 +278,9 @@ function createNewBoard()
         } while ($wordChecked != 0); //Sale cuando la palabra se ha comprobado. 
 
         //Cargamos el array con los datos de las palabras seleccionadas
-        $_SESSION['dataArray'][] = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "falso");
-        
+        $_SESSION['dataArray'][] = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "false");
+        //$_SESSION['dataArray'][] = array($capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "falso");
+
         //Recorro la palabra comprobada y colocamos
         $row = $firstLR;
         $column = $firstLC;
@@ -214,8 +300,7 @@ function createNewBoard()
                 $column = $column - 1;
             }
         }
-        var_dump($_SESSION['dataArray']);
-    }//Vuelve al foreach a por la siguiente palabra  
+    } //Vuelve al foreach a por la siguiente palabra  
 }
 
 function showBoard()
@@ -228,12 +313,11 @@ function showBoard()
     for ($i = 0; $i <= LENGTHBOARD; $i++) {
         echo "<div class='row'>";
         for ($j = 0; $j <= LENGTHBOARD; $j++) {
-            
+
             if ($_SESSION["board"][$i][$j] == 0) {
-                $_SESSION["board"][$i][$j] = $alphabet[rand(0, 5)];  
+                $_SESSION["board"][$i][$j] = $alphabet[rand(0, 5)];
             }
             echo "<div id='upper' class='square'><a href=\"index.php?row=" . $i . "&column=" . $j . "\">" . $_SESSION["board"][$i][$j]  . "</a></div>";
-
         }
         echo "</div>";
     }
@@ -250,36 +334,37 @@ function showBoard()
 
 <!--Muestra tablero interno-->
 
-    <style>
-        body {
-            padding: 10px;
-        }
+<style>
+    body {
+        padding: 10px;
+    }
 
-        a {
-            *text-decoration: none;
-        }
+    a {
+        *text-decoration: none;
+    }
 
-        #container {
-            background-color: palegoldenrod;
-            width: 300px;
-            padding: 10px;
-        }
+    #container {
+        background-color: palegoldenrod;
+        width: 300px;
+        padding: 10px;
+    }
 
-        .square {
-            width: 30px;
-            height: 30px;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .square {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        #upper {
-            color: blue;
-        }
+    #upper {
+        color: blue;
+    }
 
-        .row {
-            display: flex;
-        }
-    </style>
+    .row {
+        display: flex;
+    }
+</style>
+
 </html>
