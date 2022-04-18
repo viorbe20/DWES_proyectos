@@ -208,10 +208,6 @@ function createNewBoard()
                 }
             } while ($lastLC > LENGTHBOARD || $lastLC < 0);
 
-            //Cargamos datos de capital y coordenadas en el array de verificación
-            //$capitalsDataArray = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "falso");
-            //$_SESSION['capitalsDataArray'] = array("Nombre" => $capitalName, "Empieza" => $firstLR . $firstLC, "Acaba" => $lastLR . $lastLC, "Estado" => "falso");
-
             //Cargamos estas variables con la posición de la letra incial y 
             //las usaremos como índices para recorrer el array donde ya hay colocadas capitales
             $row = $firstLR;
@@ -297,10 +293,6 @@ function showBoard()
     echo "</div><br>";
 }
 
-
-
-
-
 ?>
 
 <!--Muestra tablero interno-->
@@ -317,7 +309,7 @@ function showBoard()
     }
 
     #container {
-        background-color: palegoldenrod;
+        background-color: pink;
         width: 300px;
         padding: 10px;
     }
@@ -351,8 +343,5 @@ if (count(array_unique($_SESSION['correct'])) == 5) {
 foreach (array_unique($_SESSION['correct']) as $key => $value) {
     echo ($value) . "<br>";
 }
-
-
 ?>
-
 </html>
