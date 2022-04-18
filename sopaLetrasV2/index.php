@@ -16,6 +16,7 @@ if (!isset($_SESSION['board'])) {
     $_SESSION['board'] = array();
     $_SESSION['dataArray'] = array();
     $_SESSION['toggle'] = 1;
+    $_SESSION['correct'] = array();
     createNewBoard();
 }
 
@@ -86,12 +87,21 @@ if (isset($_GET['row'])) {
             }
 
             //Si se han acertado las posiciones comprobamos índices
-            if ($_SESSION['solutionRow'] = $_SESSION['solutionColumn']){
-                echo('<br>Has acertado') ;
+            if ($_SESSION['solutionRow'] = $_SESSION['solutionColumn']) {
+                echo ('<br>Has acertado');
                 $index =  $_SESSION['solutionRow'][0];
-                echo('<br>' . $index);
-                echo('<br>');
+                echo ('<br>' . $index);
+                echo ('<br>');
                 $_SESSION['dataArray'][$index]["Estado"] = true;
+
+                foreach ($_SESSION['dataArray'] as $key => $value) {
+                    if ($key == $index) {
+                        array_push($_SESSION['correct'], $_SESSION['dataArray'][$index]["Nombre"]);
+                        // foreach ($_SESSION['correct'] as $key => $value) {
+                        //     echo('<br>'. $value) ;
+                        // }
+                    }
+                }
                 //var_dump($_SESSION['dataArray'][$index]["Estado"]);
             }
             unset($_SESSION['solutionRow']);
@@ -300,7 +310,7 @@ function showBoard()
             if ($_SESSION["board"][$i][$j] == 0) {
                 $_SESSION["board"][$i][$j] = $alphabet[rand(0, 5)];
             }
-            echo "<div id='upper' class='square'><a href=\"index.php?row=" . $i . "&column=" . $j . "\">" . $_SESSION["board"][$i][$j]  . "</a></div>";
+            echo "<div class='square'><a href=\"index.php?row=" . $i . "&column=" . $j . "\">" . $_SESSION["board"][$i][$j]  . "</a></div>";
         }
         echo "</div>";
     }
@@ -323,7 +333,8 @@ function showBoard()
     }
 
     a {
-        *text-decoration: none;
+        text-decoration: none;
+        color: green;
     }
 
     #container {
@@ -339,9 +350,10 @@ function showBoard()
         display: flex;
         justify-content: center;
         align-items: center;
+
     }
 
-    #upper {
+    .upper {
         color: blue;
     }
 
@@ -349,5 +361,11 @@ function showBoard()
         display: flex;
     }
 </style>
+<h2>Capitales encontradas</h2>
+<?php
+foreach ($_SESSION['correct'] as $key => $value) {
+    echo ($value);
+}
+?>
 
 </html>
